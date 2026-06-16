@@ -17,6 +17,7 @@ You must have at least 3 tools. The three required tools are listed — add any 
 **What it does:**
 <!-- Describe what this tool does in 1–2 sentences -->
 
+
 **Input parameters:**
 <!-- List each parameter, its type, and what it represents -->
 - `description` (str): ...
@@ -141,12 +142,15 @@ Write out what a full user interaction looks like from start to finish — tool 
 
 **Step 1:**
 <!-- What does the agent do first? Which tool is called? With what input? -->
+Agent uses search_listing() tool to look for items matching description, the tools returns 3 matching sorted by relevance. Agent chooses the top choice.
 
 **Step 2:**
 <!-- What happens next? What was returned from step 1? What tool is called now? -->
+Agent uses suggest_outfit() tool to find possible outfits between new item and items in the current wardrobe. It returns a suggestion comment for an outfit.
 
 **Step 3:**
 <!-- Continue until the full interaction is complete -->
+Agent uses create_fit_card() tool to create a 'look' card, with a matching caption the user can use for a social media post. 
 
 **Final output to user:**
 <!-- What does the user actually see at the end? -->
