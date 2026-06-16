@@ -16,7 +16,7 @@ You must have at least 3 tools. The three required tools are listed — add any 
 
 **What it does:**
 <!-- Describe what this tool does in 1–2 sentences -->
-
+This tool takes the user's preferences/description of an item (such as size, price, and overall description) and then searches for matching listings. It picks the top 3 most relevant listings and returns them as a list. 
 
 **Input parameters:**
 <!-- List each parameter, its type, and what it represents -->
