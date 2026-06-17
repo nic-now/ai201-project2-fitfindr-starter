@@ -146,6 +146,16 @@ The planning.md said to use an LLM call to parse the query. I used regex instead
 
 ---
 
+## Extra Features
+
+### Price Comparison
+compare_price(new_item) compares the item's price to other listings in the same category from the dataset. No LLM needed. Returns a short verdict like "good deal" or "above average." Shows up at the bottom of the listing panel.
+
+### Retry Logic
+If search returns nothing, the agent retries with size and price filters removed. If that finds results it keeps going and shows a note saying what was adjusted. If still empty, it sets the error and stops.
+
+---
+
 ## AI Usage
 
 Instance 1: I gave Claude the Tool 2 spec to write suggest_outfit. The Groq response content can be None but Claude called .strip() on it directly, which would crash. I added an "or empty string" fallback to fix it.

@@ -225,3 +225,44 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
         f"Styling Tip: {outfit}\n"
         f"Caption: {caption}"
     )
+
+
+# ── EXTRA: Tool 4: compare_price ──────────────────────────────────────────────
+
+def compare_price(new_item: dict) -> str:
+    """
+    Compare the item's price against other listings in the same category.
+
+    Args:
+        new_item: A listing dict with at least 'price' and 'category' fields.
+
+    Returns:
+        A string with a price assessment — average, range, and a verdict.
+        Returns a fallback string if no comparable listings are found.
+    """
+    listings = load_listings()
+    category = new_item.get("category", "")
+    item_price = new_item.get("price", 0)
+
+    # find prices for listings in the same category
+    same_cat_prices = [l["price"] for l in listings if l["category"] == category]
+
+    if not same_cat_prices:
+        return f"No comparable {category} listings found for price comparison."
+
+    avg = sum(same_cat_prices) / len(same_cat_prices)
+    low = min(same_cat_prices)
+    high = max(same_cat_prices)
+
+    if item_price < avg * 0.8:
+        verdict = "good deal"
+    elif item_price > avg * 1.2:
+        verdict = "above average"
+    else:
+        verdict = "fair price"
+
+    return (
+        f"Price check: ${item_price:.0f} for a {category} item. "
+        f"Similar items range from ${low:.0f} to ${high:.0f} (avg ${avg:.0f}). "
+        f"This looks like a {verdict}."
+    )

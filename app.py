@@ -71,6 +71,18 @@ def handle_query(user_query: str, wardrobe_choice: str) -> tuple[str, str, str]:
         f"Style: {', '.join(item.get('style_tags', []))}"
     )
 
+    # EXTRA: prepend retry note if filters were relaxed
+    if session.get("retry_note"):
+        listing_text = session["retry_note"] + "
+
+" + listing_text
+
+    # EXTRA: append price comparison if available
+    if session.get("price_comparison"):
+        listing_text += "
+
+" + session["price_comparison"]
+
     return listing_text, session["outfit_suggestion"], session["fit_card"]
 
 

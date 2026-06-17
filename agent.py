@@ -20,7 +20,7 @@ Usage (once implemented):
 
 import re
 
-from tools import search_listings, suggest_outfit, create_fit_card
+from tools import search_listings, suggest_outfit, create_fit_card, compare_price
 
 
 # ── query parser ──────────────────────────────────────────────────────────────
@@ -59,6 +59,8 @@ def _new_session(query: str, wardrobe: dict) -> dict:
         "outfit_suggestion": None,   # string returned by suggest_outfit
         "fit_card": None,            # string returned by create_fit_card
         "error": None,               # set if the interaction ended early
+        "retry_note": None,            # set if filters were relaxed on retry
+        "price_comparison": None,      # set by compare_price (extra feature)
     }
 
 
@@ -117,14 +119,23 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     size = session["parsed"]["size"]
     max_price = session["parsed"]["max_price"]
 
-    # step 2: search for listings — stop early if nothing matches
+    # step 2: search for listings
     session["search_results"] = search_listings(desc, size, max_price)
+
+    # EXTRA: retry with no filters if nothing matched (retry logic)
     if not session["search_results"]:
-        session["error"] = "No listings found. Try a different description, size, or price range."
-        return session
+        session["search_results"] = search_listings(desc, size=None, max_price=None)
+        if session["search_results"]:
+            session["retry_note"] = "No exact matches found. Showing results without size or price filters."
+        else:
+            session["error"] = "No listings found. Try a different description."
+            return session
 
     # step 3: pick the top result
     session["selected_item"] = session["search_results"][0]
+
+    # EXTRA: compare price against similar listings in the dataset
+    session["price_comparison"] = compare_price(session["selected_item"])
 
     # step 4: suggest an outfit using the item and the user's wardrobe
     session["outfit_suggestion"] = suggest_outfit(session["selected_item"], wardrobe)
